@@ -1,5 +1,5 @@
--- Buat database
-CREATE DATABASE IF NOT EXISTS Proyek_pbd;
+-- Membuat database
+CREATE DATABASE Proyek_pbd;
 USE Proyek_pbd;
 
 -- Tabel Pengunjung
@@ -10,12 +10,12 @@ CREATE TABLE Pengunjung (
   email VARCHAR(50) NOT NULL,
   no_telepon VARCHAR(20) NOT NULL
 );
-
-INSERT INTO Pengunjung (nama, alamat, email, no_telepon) VALUES
-('John Doe', 'Jl. Merdeka No. 123', 'johndoe@gmail.com', '08123456789'),
-('Jane Smith', 'Jl. Sudirman No. 456', 'janesmith@gmail.com', '08987654321'),
-('Mark Johnson', 'Jl. Ahmad Yani No. 789', 'markjohnson@gmail.com', '08567891234'),
-('Sarah Williams', 'Jl. Gatot Subroto No. 321', 'sarahwilliams@gmail.com', '08765432109');
+-- Menyisipkan data ke dalam tabel Pengunjung
+INSERT INTO Pengunjung (nama, alamat, email, no_telepon)
+VALUES ('John Doe', 'Jl. Merdeka No. 123', 'johndoe@gmail.com', '08123456789'),
+       ('Jane Smith', 'Jl. Sudirman No. 456', 'janesmith@gmail.com', '08987654321'),
+       ('Mark Johnson', 'Jl. Ahmad Yani No. 789', 'markjohnson@gmail.com', '08567891234'),
+       ('Sarah Williams', 'Jl. Gatot Subroto No. 321', 'sarahwilliams@gmail.com', '08765432109');
 
 -- Tabel Wisata
 CREATE TABLE Wisata (
@@ -28,23 +28,40 @@ CREATE TABLE Wisata (
   jam_buka TIME NOT NULL,
   gambar VARCHAR(100)
 );
+-- Menyisipkan data ke dalam tabel Wisata
+INSERT INTO Wisata (nama, kategori, alamat, deskripsi, harga, jam_buka, gambar)
+VALUES ('Pantai Indah', 'Pantai', 'Jl. Pantai Indah No. 1', 'Pantai yang indah dengan pasir putih dan air jernih.', 50.00, '09:00:00', 'pantai_indah.jpg'),
+       ('Gunung Permai', 'Gunung', 'Jl. Gunung Permai No. 2', 'Gunung dengan pemandangan indah dan jalur pendakian yang menantang.', 100.00, '07:00:00', 'gunung_permai.jpg'),
+       ('Taman Wisata Alam', 'Taman', 'Jl. Taman Wisata No. 3', 'Taman yang luas dengan beragam flora dan fauna.', 20.00, '08:00:00', 'taman_wisata_alam.jpg');
+-- Tabel Ulasan
+CREATE TABLE Ulasan (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  pengunjung_id INT,
+  wisata_id INT,
+  rating INT NOT NULL,
+  komentar TEXT,
+  FOREIGN KEY (pengunjung_id) REFERENCES Pengunjung(id),
+  FOREIGN KEY (wisata_id) REFERENCES Wisata(id)
+);
+-- Menyisipkan data ke dalam tabel Ulasan
+INSERT INTO Ulasan (pengunjung_id, wisata_id, rating, komentar)
+VALUES (1, 1, 4, 'Pantai Indah sangat menakjubkan. Pemandangannya luar biasa!'),
+       (2, 2, 5, 'Gunung Permai luar biasa! Pendakiannya sulit tetapi sangat menyenangkan.'),
+       (3, 3, 3, 'Taman Wisata Alam memiliki banyak pilihan aktivitas menarik.'),
+       (4, 1, 2, 'Pantai Indah tidak sesuai harapan. Terlalu ramai dan kotor.');
 
-INSERT INTO Wisata (nama, kategori, alamat, deskripsi, harga, jam_buka, gambar) VALUES
-('Pantai Indah', 'Pantai', 'Jl. Pantai Indah No. 1', 'Pantai dengan pasir putih dan air jernih.', 50.00, '09:00:00', 'pantai_indah.jpg'),
-('Gunung Permai', 'Gunung', 'Jl. Gunung Permai No. 2', 'Gunung dengan pemandangan indah.', 100.00, '07:00:00', 'gunung_permai.jpg'),
-('Taman Wisata Alam', 'Taman', 'Jl. Taman Wisata No. 3', 'Taman dengan flora dan fauna.', 20.00, '08:00:00', 'taman_wisata_alam.jpg');
 
 -- Tabel Admin
-CREATE TABLE Admin (
+CREATE TABLE ADMIN (
   id INT AUTO_INCREMENT PRIMARY KEY,
   nama VARCHAR(50) NOT NULL,
   username VARCHAR(50) NOT NULL,
-  password VARCHAR(50) NOT NULL
+  PASSWORD VARCHAR(50) NOT NULL
 );
-
-INSERT INTO Admin (nama, username, password) VALUES
-('Admin1', 'admin1', 'admin123'),
-('Admin2', 'admin2', 'admin456');
+-- Menyisipkan data ke dalam tabel Admin
+INSERT INTO ADMIN (nama, username, PASSWORD)
+VALUES ('Admin1', 'admin1', 'admin123'),
+       ('Admin2', 'admin2', 'admin456');
 
 -- Tabel Tiket
 CREATE TABLE Tiket (
@@ -56,193 +73,186 @@ CREATE TABLE Tiket (
   FOREIGN KEY (pengunjung_id) REFERENCES Pengunjung(id),
   FOREIGN KEY (wisata_id) REFERENCES Wisata(id)
 );
+-- Menyisipkan data ke dalam tabel Tiket
+INSERT INTO Tiket (pengunjung_id, wisata_id, jumlah_tiket, tanggal)
+VALUES (1, 1, 2, '2023-05-17'),
+       (2, 2, 3, '2023-05-18'),
+       (3, 3, 1, '2023-05-19'),
+       (4, 1, 4, '2023-05-20');
+       
+       
+-- 10 query yang menampilkan data dari 1 table
 
-INSERT INTO Tiket (pengunjung_id, wisata_id, jumlah_tiket, tanggal) VALUES
-(1, 1, 2, '2023-05-17'),
-(2, 2, 3, '2023-05-18'),
-(3, 3, 1, '2023-05-19'),
-(4, 1, 4, '2023-05-20');
+-- Menampilkan semua data dalam tabel wisata: 
+ SELECT * FROM Wisata;
+ 
+ -- Menampilkan nama dan harga tiket dari semua tempat wisata:
+ SELECT nama, harga FROM Wisata;
+ 
+-- Menampilkan jumlah  total pengunjung yang telah mengulas tempat wisata:
+SELECT COUNT(DISTINCT pengunjung_id) AS total_pengunjung
+FROM Ulasan;
 
--- Tabel Ulasan
-CREATE TABLE Ulasan (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  pengunjung_id INT,
-  wisata_id INT,
-  rating INT NOT NULL,
-  komentar TEXT,
-  FOREIGN KEY (pengunjung_id) REFERENCES Pengunjung(id),
-  FOREIGN KEY (wisata_id) REFERENCES Wisata(id)
-);
+-- Menampilkan jumlah ulasan yang diberikan untuk setiap tempat wisata:
+SELECT wisata_id, COUNT(*) AS jumlah_ulasan
+FROM Ulasan
+GROUP BY wisata_id;
 
-INSERT INTO Ulasan (pengunjung_id, wisata_id, rating, komentar) VALUES
-(1, 1, 4, 'Pantai Indah sangat menakjubkan!'),
-(2, 2, 5, 'Gunung Permai luar biasa dan menantang.'),
-(3, 3, 3, 'Taman Wisata menyenangkan untuk keluarga.'),
-(4, 1, 2, 'Pantai Indah terlalu ramai dan kotor.');
-
--- Tabel Kunjungan (Opsional)
-CREATE TABLE Kunjungan (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  id_wisata INT,
-  pengunjung_id INT,
-  tanggal DATE,
-  FOREIGN KEY (id_wisata) REFERENCES Wisata(id),
-  FOREIGN KEY (pengunjung_id) REFERENCES Pengunjung(id)
-);
-
-INSERT INTO Kunjungan (id_wisata, pengunjung_id, tanggal) VALUES
-(1, 1, '2023-01-01'),
-(2, 2, '2023-01-02'),
-(1, 3, '2023-01-03'),
-(3, 4, '2023-01-04'),
-(2, 1, '2023-01-05');
-
--- -------------------------------
--- Query Tunggal (1 Tabel)
--- -------------------------------
-
--- 1. Semua wisata
-SELECT * FROM Wisata;
-
--- 2. Nama dan harga wisata
-SELECT nama, harga FROM Wisata;
-
--- 3. Total pengunjung yang mengulas
-SELECT COUNT(DISTINCT pengunjung_id) AS total_pengunjung FROM Ulasan;
-
--- 4. Jumlah ulasan per wisata
-SELECT wisata_id, COUNT(*) AS jumlah_ulasan FROM Ulasan GROUP BY wisata_id;
-
--- 5. Wisata dengan total harga tiket > 200
+-- Menampilkan tempat wisata dengan total harga tiket lebih dari 200:
 SELECT Wisata.nama, SUM(Tiket.jumlah_tiket * Wisata.harga) AS total_harga
 FROM Wisata
-JOIN Tiket ON Wisata.id = Tiket.wisata_id
+INNER JOIN Tiket ON Wisata.id = Tiket.wisata_id
 GROUP BY Wisata.id
 HAVING total_harga > 200;
 
--- 6. Tiket yang dipesan pada tanggal tertentu
+-- Menampilkan jumlah tiket yang telah dipesan pada tanggal tertentu:
 SELECT tanggal, SUM(jumlah_tiket) AS total_tiket
 FROM Tiket
 WHERE tanggal = '2023-05-17'
 GROUP BY tanggal;
 
--- 7. Wisata dengan jumlah ulasan > 0
-SELECT w.nama, COUNT(u.id) AS jumlah_ulasan
-FROM Wisata w
-LEFT JOIN Ulasan u ON w.id = u.wisata_id
+-- Menampilkan tempat wisata dengan jumlah ulasan lebih dari 0:
+SELECT w.nama, COUNT(u.wisata_id) AS jumlah_ulasan
+FROM Wisata AS w
+LEFT JOIN Ulasan AS u ON w.id = u.wisata_id
 GROUP BY w.id
-HAVING jumlah_ulasan > 0;
+HAVING COUNT(u.wisata_id) > 0;
 
--- 8. Wisata dengan deskripsi lebih dari 10 karakter
-SELECT * FROM Wisata WHERE LENGTH(deskripsi) > 10;
+-- Menampilkan tempat wisata yang memiliki deskripsi lebih dari 10 karakter:
+SELECT *
+FROM Wisata
+WHERE LENGTH(deskripsi) > 10;
+ 
+-- Menampilkan tempat wisata dengan harga tiket maksimum:
+SELECT *
+FROM Wisata
+WHERE harga = (SELECT MAX(harga) FROM Wisata);
 
--- 9. Wisata dengan harga tiket maksimum
-SELECT * FROM Wisata WHERE harga = (SELECT MAX(harga) FROM Wisata);
-
--- 10. Wisata yang buka setelah jam 08:00
+-- Menampilkan tempat wisata yang dibuka setelah pukul 8 pagi:
 SELECT * FROM Wisata WHERE jam_buka > '08:00:00';
 
--- -------------------------------
--- Query JOIN Antar Tabel
--- -------------------------------
+-- 10 query yang menampilkan data dari beberapa tabel dengan menggunakan inner JOIN, left JOIN, dan right JOIN:
 
--- 1. Pengunjung dan wisata yang diulas
-SELECT p.nama, w.nama AS wisata
-FROM Pengunjung p
-JOIN Ulasan u ON p.id = u.pengunjung_id
-JOIN Wisata w ON u.wisata_id = w.id;
+-- Nomor 1:
+-- Menampilkan nama pengunjung dan nama tempat wisata yang telah dikunjungi oleh pengunjung:
+SELECT Pengunjung.nama, Wisata.nama AS nama_tempat_wisata
+FROM Pengunjung
+INNER JOIN Ulasan ON Pengunjung.id = Ulasan.pengunjung_id
+INNER JOIN Wisata ON Ulasan.wisata_id = Wisata.id;
 
--- 2. Pengunjung dan total tiket yang dibeli
-SELECT p.nama, SUM(t.jumlah_tiket) AS total_tiket
-FROM Pengunjung p
-LEFT JOIN Tiket t ON p.id = t.pengunjung_id
-GROUP BY p.id;
+-- Nomor 2:
+-- Menampilkan nama pengunjung dan total jumlah tiket yang telah dibeli oleh masing-masing pengunjung:
+SELECT Pengunjung.nama, SUM(Tiket.jumlah_tiket) AS total_tiket
+FROM Pengunjung
+LEFT JOIN Tiket ON Pengunjung.id = Tiket.pengunjung_id
+GROUP BY Pengunjung.id;
 
--- 3. Semua pengunjung & tempat wisata (termasuk yang belum mengulas)
-SELECT p.nama, w.nama AS wisata
-FROM Pengunjung p
-LEFT JOIN Ulasan u ON p.id = u.pengunjung_id
-LEFT JOIN Wisata w ON u.wisata_id = w.id;
+-- Nomor 3:
+-- Menampilkan nama pengunjung dan nama tempat wisata yang telah dikunjungi oleh pengunjung, termasuk pengunjung yang belum mengulas:
+SELECT Pengunjung.nama, Wisata.nama AS nama_tempat_wisata
+FROM Pengunjung
+LEFT JOIN Ulasan ON Pengunjung.id = Ulasan.pengunjung_id
+LEFT JOIN Wisata ON Ulasan.wisata_id = Wisata.id;
 
--- 4. Wisata dan jumlah ulasan
-SELECT w.nama, COUNT(u.id) AS jumlah_ulasan
-FROM Wisata w
-LEFT JOIN Ulasan u ON w.id = u.wisata_id
-GROUP BY w.id;
+-- Nomor 4:
+-- Menampilkan nama tempat wisata dan jumlah ulasan yang diberikan untuk setiap tempat wisata:
+SELECT Wisata.nama, COUNT(Ulasan.id) AS jumlah_ulasan
+FROM Wisata
+LEFT JOIN Ulasan ON Wisata.id = Ulasan.wisata_id
+GROUP BY Wisata.id;
 
--- 5. Wisata, tiket terjual, dan total pemasukan
-SELECT w.nama, SUM(t.jumlah_tiket) AS total_tiket, SUM(t.jumlah_tiket * w.harga) AS total_harga
-FROM Wisata w
-LEFT JOIN Tiket t ON w.id = t.wisata_id
-GROUP BY w.id;
+-- Nomor 5:
+-- Menampilkan nama tempat wisata, jumlah tiket yang telah dipesan, dan total harga tiket untuk setiap tempat wisata:
+SELECT Wisata.nama, SUM(Tiket.jumlah_tiket) AS total_tiket, SUM(Tiket.jumlah_tiket * Wisata.harga) AS total_harga
+FROM Wisata
+LEFT JOIN Tiket ON Wisata.id = Tiket.wisata_id
+GROUP BY Wisata.id;
 
--- 6. Pengunjung, wisata, dan tanggal kunjungan
-SELECT p.nama, w.nama AS wisata, t.tanggal
-FROM Pengunjung p
-JOIN Tiket t ON p.id = t.pengunjung_id
-JOIN Wisata w ON t.wisata_id = w.id;
+-- Nomor 6:
+-- Menampilkan nama pengunjung, nama tempat wisata, dan tanggal kunjungan pengunjung:
+SELECT Pengunjung.nama, Wisata.nama AS nama_tempat_wisata, Tiket.tanggal
+FROM Pengunjung
+INNER JOIN Tiket ON Pengunjung.id = Tiket.pengunjung_id
+INNER JOIN Wisata ON Tiket.wisata_id = Wisata.id;
 
--- 7. Pengunjung yang memberikan ulasan
-SELECT p.nama, w.nama AS wisata
-FROM Pengunjung p
-JOIN Ulasan u ON p.id = u.pengunjung_id
-JOIN Wisata w ON u.wisata_id = w.id;
+-- Nomor 7:
+-- Menampilkan nama pengunjung dan nama tempat wisata yang telah dikunjungi oleh pengunjung, hanya jika pengunjung telah memberikan ulasan:
+SELECT Pengunjung.nama, Wisata.nama AS nama_tempat_wisata
+FROM Pengunjung
+INNER JOIN Ulasan ON Pengunjung.id = Ulasan.pengunjung_id
+INNER JOIN Wisata ON Ulasan.wisata_id = Wisata.id;
 
--- 8. Pengunjung dan jumlah tiket (termasuk yang tidak pesan)
-SELECT p.nama, w.nama AS wisata, COALESCE(SUM(t.jumlah_tiket), 0) AS total_tiket
-FROM Pengunjung p
-LEFT JOIN Tiket t ON p.id = t.pengunjung_id
-LEFT JOIN Wisata w ON t.wisata_id = w.id
-GROUP BY p.id, w.id;
+-- Nomor 8:
+-- Menampilkan nama pengunjung, nama tempat wisata, dan jumlah tiket yang telah dipesan oleh pengunjung, termasuk pengunjung yang belum melakukan pemesanan:
+SELECT Pengunjung.nama, Wisata.nama AS nama_tempat_wisata, COALESCE(SUM(Tiket.jumlah_tiket), 0) AS total_tiket
+FROM Pengunjung
+LEFT JOIN Tiket ON Pengunjung.id = Tiket.pengunjung_id
+LEFT JOIN Wisata ON Tiket.wisata_id = Wisata.id
+GROUP BY Pengunjung.id, Wisata.id;
 
--- 9. Pengunjung yang membeli tiket dan mengulas
-SELECT p.nama, w.nama AS wisata, t.tanggal
-FROM Pengunjung p
-JOIN Ulasan u ON p.id = u.pengunjung_id
-JOIN Wisata w ON u.wisata_id = w.id
-JOIN Tiket t ON p.id = t.pengunjung_id AND w.id = t.wisata_id;
+-- Nomor 9:
+-- Menampilkan nama pengunjung, nama tempat wisata, dan tanggal kunjungan pengunjung yang memiliki ulasan:
+SELECT Pengunjung.nama, Wisata.nama AS nama_tempat_wisata, Tiket.tanggal
+FROM Pengunjung
+INNER JOIN Ulasan ON Pengunjung.id = Ulasan.pengunjung_id
+INNER JOIN Wisata ON Ulasan.wisata_id = Wisata.id
+INNER JOIN Tiket ON Pengunjung.id = Tiket.pengunjung_id AND Wisata.id = Tiket.wisata_id;
 
--- 10. Wisata yang menerima lebih dari 1 ulasan
-SELECT w.nama, COUNT(u.id) AS jumlah_ulasan
-FROM Wisata w
-LEFT JOIN Ulasan u ON w.id = u.wisata_id
-GROUP BY w.id
-HAVING jumlah_ulasan > 1;
+-- Nomor 10
+-- Menampilkan nama tempat wisata dan jumlah ulasan yang diterima oleh tempat wisata, hanya jika jumlah ulasan lebih dari 1:
+SELECT Wisata.nama, COUNT(Ulasan.id) AS jumlah_ulasan
+FROM Wisata
+LEFT JOIN Ulasan ON Wisata.id = Ulasan.wisata_id
+GROUP BY Wisata.id
+HAVING COUNT(Ulasan.id) > 1;
 
--- -------------------------------
--- Subquery (5 Contoh)
--- -------------------------------
+-- 5 penggunaan subquery
+-- Nomor 1:
+-- Menggunakan Subquery dalam SELECT Statement:
+SELECT Pengunjung.nama, (SELECT COUNT(*) FROM Tiket WHERE Tiket.pengunjung_id = Pengunjung.id) AS jumlah_tiket
+FROM Pengunjung;
 
--- 1. Subquery dalam SELECT
-SELECT nama, (SELECT COUNT(*) FROM Tiket WHERE pengunjung_id = p.id) AS jumlah_tiket
-FROM Pengunjung p;
+-- Nomor 2:
+-- Menggunakan Subquery dalam WHERE Clause:
+SELECT nama
+FROM Pengunjung
+WHERE id IN (SELECT pengunjung_id FROM Tiket WHERE DATE(tanggal) = CURDATE());
 
--- 2. Subquery dalam WHERE
-SELECT nama FROM Pengunjung
-WHERE id IN (SELECT pengunjung_id FROM Tiket WHERE tanggal = CURDATE());
-
--- 3. Subquery dalam FROM
+-- Nomor 3:
+-- Menggunakan Subquery dalam FROM Clause:
 SELECT t1.nama, t2.jumlah_ulasan
-FROM (
-  SELECT p.nama, COUNT(*) AS jumlah_ulasan
-  FROM Pengunjung p
-  JOIN Ulasan u ON p.id = u.pengunjung_id
-  GROUP BY p.id
-) t1
-JOIN (
-  SELECT p.nama, COUNT(*) AS jumlah_ulasan
-  FROM Pengunjung p
-  JOIN Ulasan u ON p.id = u.pengunjung_id
-  WHERE u.rating > 3
-  GROUP BY p.id
-) t2 ON t1.nama = t2.nama;
+FROM (SELECT Pengunjung.nama, COUNT(*) AS jumlah_ulasan FROM Pengunjung INNER JOIN Ulasan ON Pengunjung.id = Ulasan.pengunjung_id GROUP BY Pengunjung.id) AS t1
+INNER JOIN (SELECT Pengunjung.nama, COUNT(*) AS jumlah_ulasan FROM Pengunjung INNER JOIN Ulasan ON Pengunjung.id = Ulasan.pengunjung_id WHERE Ulasan.rating > 3 GROUP BY Pengunjung.id) AS t2 ON t1.nama = t2.nama;
 
--- 4. Subquery dalam HAVING
+-- Nomor 4 :
+-- Menggunakan Subquery dalam HAVING Clause:
 SELECT id_wisata, COUNT(*) AS jumlah_pengunjung
 FROM Kunjungan
 GROUP BY id_wisata
 HAVING COUNT(*) > 0;
 
--- 5. Pengunjung yang pernah tercatat di tabel kunjungan
-SELECT nama FROM Pengunjung
+CREATE TABLE Kunjungan (
+    id INT AUTO_INCREMENT,
+    id_wisata INT,
+    pengunjung_id INT,
+    tanggal DATE,
+    PRIMARY KEY (id),
+    FOREIGN KEY (id_wisata) REFERENCES Wisata(id),
+    FOREIGN KEY (pengunjung_id) REFERENCES Pengunjung(id)
+);
+INSERT INTO Kunjungan (id_wisata, tanggal) VALUES
+(1, '2023-01-01'),
+(2, '2023-01-02'),
+(1, '2023-01-03'),
+(3, '2023-01-04'),
+(2, '2023-01-05');
+
+-- Nomor 5
+SELECT nama
+FROM Pengunjung
 WHERE id IN (SELECT pengunjung_id FROM Kunjungan);
+
+ALTER TABLE Kunjungan
+ADD COLUMN pengunjung_id INT,
+ADD FOREIGN KEY (pengunjung_id) REFERENCES Pengunjung(id);
+
